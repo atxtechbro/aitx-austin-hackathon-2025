@@ -100,10 +100,13 @@ Goal: {state['goal']}
 WORKFLOW RULES:
 1. FIRST: Call detect_scenes once to find all scenes
 2. THEN: Call analyze_scene for EACH scene (scene_index: 0, 1, 2, etc.)
-3. AFTER analyzing ALL scenes: Extract the top N clips with extract_clip
+3. AFTER analyzing scenes: Extract the top N clips with extract_clip
    - Use scene_index from the TOP scoring scenes shown in history
    - Set rank=1 for best clip, rank=2 for second best, etc.
-4. Set done=true ONLY after extracting all required clips
+   - Call extract_clip ONCE for each clip needed
+4. CRITICAL: Set done=true ONLY AFTER all clips have been extracted
+   - Keep done=false when calling extract_clip
+   - Only set done=true AFTER seeing "Clips extracted: N" in history
 
 Available Tools:
 {tools_desc}
@@ -125,8 +128,11 @@ Respond IMMEDIATELY with ONLY valid JSON. NO thinking tags, NO markdown, NO expl
     "done": false
 }}
 
-Set "done": true ONLY when you've extracted all required clips.
-Do NOT use <think> tags. Output JSON directly.
+CRITICAL REMINDERS:
+- Keep done=false while extracting clips
+- Only set done=true AFTER all required clips are extracted and you see them in history
+- Do NOT set done=true in the same response as calling extract_clip
+- Do NOT use <think> tags. Output JSON directly.
 """
 
         # Call Nemotron
