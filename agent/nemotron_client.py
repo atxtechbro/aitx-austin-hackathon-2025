@@ -15,7 +15,8 @@ class NemotronAgent:
     def __init__(self, api_key: str):
         """Initialize agent with NVIDIA API key."""
         self.api_key = api_key
-        self.url = "https://ai.api.nvidia.com/v1/vlm/nvidia/cosmos-nemotron-34b"
+        self.url = "https://integrate.api.nvidia.com/v1/chat/completions"
+        self.model = "meta/llama-3.2-90b-vision-instruct"
 
     def run(
         self,
@@ -135,7 +136,7 @@ Set "done": true when you've achieved the goal (extracted and saved the clips).
             messages.insert(0, {"role": "system", "content": "/think"})
 
         payload = {
-            "model": "nvidia/cosmos-nemotron-34b",
+            "model": self.model,
             "messages": messages,
             "temperature": 0.2,
             "max_tokens": 1024
@@ -199,10 +200,10 @@ Set "done": true when you've achieved the goal (extracted and saved the clips).
 
 
 def analyze_scene_with_nemotron(api_key: str, frame_path: str, timestamp: float) -> Dict:
-    """Analyze gaming screenshot with Cosmos Nemotron 34B VLM."""
+    """Analyze gaming screenshot with Llama 3.2 Vision VLM."""
     import base64
 
-    url = "https://ai.api.nvidia.com/v1/vlm/nvidia/cosmos-nemotron-34b"
+    url = "https://integrate.api.nvidia.com/v1/chat/completions"
 
     # Read and encode the image
     with open(frame_path, 'rb') as f:
@@ -227,7 +228,7 @@ Respond with ONLY valid JSON:
 """
 
     payload = {
-        "model": "nvidia/cosmos-nemotron-34b",
+        "model": "meta/llama-3.2-90b-vision-instruct",
         "messages": [
             {
                 "role": "user",
