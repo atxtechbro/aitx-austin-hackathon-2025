@@ -88,13 +88,23 @@ class NemotronAgent:
 
 Goal: {state['goal']}
 
+WORKFLOW RULES:
+1. FIRST: Call detect_scenes once to find all scenes
+2. THEN: Call analyze_scene for EACH scene (scene_index: 0, 1, 2, etc.)
+3. AFTER analyzing ALL scenes: Extract the top N clips with extract_clip
+4. Set done=true ONLY after extracting all required clips
+
 Available Tools:
 {tools_desc}
 
 Execution History:
 {history_desc}
 
-Based on the goal and current state, decide your next action.
+IMPORTANT:
+- Analyze DIFFERENT scenes each time (increment scene_index: 0, 1, 2, 3...)
+- Don't analyze the same scene twice
+- Don't extract clips until you've analyzed enough scenes
+- Track which scenes you've already analyzed
 
 Respond with ONLY valid JSON (no markdown, no explanations):
 {{
@@ -104,7 +114,7 @@ Respond with ONLY valid JSON (no markdown, no explanations):
     "done": false
 }}
 
-Set "done": true when you've achieved the goal (extracted and saved the clips).
+Set "done": true ONLY when you've extracted all required clips.
 """
 
         # Call Nemotron with reasoning mode
@@ -176,14 +186,47 @@ Set "done": true when you've achieved the goal (extracted and saved the clips).
         if not history:
             return "(No actions taken yet)"
 
-        lines = []
-        for entry in history[-5:]:  # Last 5 actions only
+        # Track what's been done
+        scenes_detected = False
+        total_scenes = 0
+        analyzed_scenes = []
+        extracted_clips = []
+
+        for entry in history:
+            tool = entry['action']['tool']
+            if tool == 'detect_scenes' and entry.get('success'):
+                scenes_detected = True
+                # Try to parse result for scene count
+                try:
+                    import json
+                    result = json.loads(entry['result'])
+                    total_scenes = result.get('count', 0)
+                except:
+                    pass
+            elif tool == 'analyze_scene' and entry.get('success'):
+                params = entry['action'].get('params', {})
+                scene_idx = params.get('scene_index', -1)
+                if scene_idx not in analyzed_scenes:
+                    analyzed_scenes.append(scene_idx)
+            elif tool == 'extract_clip' and entry.get('success'):
+                extracted_clips.append(entry['action'])
+
+        summary = []
+        if scenes_detected:
+            summary.append(f"✓ Scenes detected: {total_scenes}")
+        summary.append(f"✓ Scenes analyzed: {len(analyzed_scenes)} {analyzed_scenes}")
+        summary.append(f"✓ Clips extracted: {len(extracted_clips)}")
+
+        # Recent actions
+        summary.append("\nRecent actions:")
+        for entry in history[-3:]:
             iter_num = entry['iteration']
             tool = entry['action']['tool']
+            params = entry['action'].get('params', {})
             success = "✓" if entry.get('success') else "✗"
-            lines.append(f"{iter_num}. {success} {tool}")
+            summary.append(f"  {iter_num}. {success} {tool} {params}")
 
-        return "\n".join(lines)
+        return "\n".join(summary)
 
     def _extract_json(self, text: str) -> Dict:
         """Extract JSON from Nemotron's response."""
