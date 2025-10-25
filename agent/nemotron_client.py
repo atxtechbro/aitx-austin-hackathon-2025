@@ -1,6 +1,6 @@
 """
 Dual Nemotron agent:
-- Super 49B Instruct for orchestration (most powerful available!)
+- Ultra 253B Instruct for orchestration (MOST POWERFUL!)
 - VL 8B for vision analysis (scoring screenshots)
 """
 
@@ -17,8 +17,8 @@ class NemotronAgent:
         """Initialize agent with NVIDIA API key."""
         self.api_key = api_key
         self.url = "https://integrate.api.nvidia.com/v1/chat/completions"
-        # Use Super 49B for orchestration (most powerful available!)
-        self.orchestrator_model = "nvidia/llama-3.3-nemotron-super-49b-v1.5"
+        # Use Ultra 253B for orchestration (MOST POWERFUL!)
+        self.orchestrator_model = "nvidia/llama-3.1-nemotron-ultra-253b-v1"
         # Use VL 8B for vision analysis
         self.vision_model = "nvidia/llama-3.1-nemotron-nano-vl-8b-v1"
 
@@ -158,7 +158,7 @@ Do NOT use <think> tags. Output JSON directly.
             messages.insert(0, {"role": "system", "content": "/think"})
 
         payload = {
-            "model": self.orchestrator_model,  # Use Super 49B for orchestration
+            "model": self.orchestrator_model,  # Use Ultra 253B for orchestration
             "messages": messages,
             "temperature": 0.2,
             "max_tokens": 1024
