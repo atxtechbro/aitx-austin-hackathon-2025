@@ -1,6 +1,6 @@
 """
 Dual Nemotron agent:
-- 340B Instruct for orchestration (most powerful!)
+- Super 49B Instruct for orchestration (most powerful available!)
 - VL 8B for vision analysis (scoring screenshots)
 """
 
@@ -17,8 +17,8 @@ class NemotronAgent:
         """Initialize agent with NVIDIA API key."""
         self.api_key = api_key
         self.url = "https://integrate.api.nvidia.com/v1/chat/completions"
-        # Use 340B for orchestration (most powerful Nemotron model!)
-        self.orchestrator_model = "nvidia/nemotron-4-340b-instruct"
+        # Use Super 49B for orchestration (most powerful available!)
+        self.orchestrator_model = "nvidia/llama-3.3-nemotron-super-49b-v1.5"
         # Use VL 8B for vision analysis
         self.vision_model = "nvidia/llama-3.1-nemotron-nano-vl-8b-v1"
 
@@ -150,7 +150,7 @@ Set "done": true ONLY when you've extracted all required clips.
             messages.insert(0, {"role": "system", "content": "/think"})
 
         payload = {
-            "model": self.orchestrator_model,  # Use 70B for orchestration
+            "model": self.orchestrator_model,  # Use Super 49B for orchestration
             "messages": messages,
             "temperature": 0.2,
             "max_tokens": 1024
