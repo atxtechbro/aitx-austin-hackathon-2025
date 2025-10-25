@@ -105,8 +105,23 @@ Load settings from config.yml:
 !VIDEO_CLIPS_DIR="${CLIPS_DIR}/${VIDEO_NAME}"
 !VIDEO_METADATA_DIR="${METADATA_DIR}/${VIDEO_NAME}"
 !
-!echo "📹 Processing: $VIDEO_PATH"
+!# Display file size and warnings
+!FILE_SIZE=$(du -h "$VIDEO_PATH" 2>/dev/null | cut -f1)
+!SIZE_BYTES=$(du -b "$VIDEO_PATH" 2>/dev/null | cut -f1)
+!
+!echo "📹 Processing: $VIDEO_PATH ($FILE_SIZE)"
 !echo "Output directory: $VIDEO_CLIPS_DIR"
+!
+!# Warn for large files
+!if [ -n "$SIZE_BYTES" ]; then
+!  if [ "$SIZE_BYTES" -gt 5368709120 ]; then  # > 5GB
+!    echo "⚠️  Very large file detected (5GB+). Processing may take 10+ minutes."
+!    echo "    Consider extracting a shorter segment first for testing."
+!  elif [ "$SIZE_BYTES" -gt 1073741824 ]; then  # > 1GB
+!    echo "⚠️  Large file detected (>1GB). Processing may take several minutes..."
+!  fi
+!fi
+!
 !echo ""
 
 ## Step 2: Setup Output Directories
