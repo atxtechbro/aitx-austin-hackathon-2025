@@ -30,8 +30,8 @@ class VideoTools:
                 'gaming_highlights': {
                     'scene_detection': {
                         'threshold': 0.3,
-                        'min_duration': 5.0,
-                        'max_duration': 45.0
+                        'min_duration': 2.0,
+                        'max_duration': 60.0
                     },
                     'output': {
                         'clips_dir': './output/clips',
@@ -141,8 +141,8 @@ class VideoTools:
             # Build scene list
             scenes = []
             config = self.config.get('gaming_highlights', {}).get('scene_detection', {})
-            min_dur = config.get('min_duration', 5.0)
-            max_dur = config.get('max_duration', 45.0)
+            min_dur = config.get('min_duration', 2.0)
+            max_dur = config.get('max_duration', 60.0)
 
             for i in range(len(timestamps) - 1):
                 start = timestamps[i]
@@ -152,12 +152,31 @@ class VideoTools:
                 # Filter by duration
                 if min_dur <= scene_duration <= max_dur:
                     scenes.append({
-                        'index': i,
+                        'index': len(scenes),
                         'start': start,
                         'end': end,
                         'duration': scene_duration,
                         'mid_point': (start + end) / 2
                     })
+
+            # Fallback: if no scenes detected, split video into equal chunks
+            if not scenes and duration > 0:
+                chunk_duration = min(15.0, duration / 5)  # 15s chunks or 5 equal parts
+                num_chunks = max(3, int(duration / chunk_duration))
+
+                for i in range(num_chunks):
+                    start = i * chunk_duration
+                    end = min((i + 1) * chunk_duration, duration)
+                    scene_duration = end - start
+
+                    if scene_duration >= 1.0:  # At least 1 second
+                        scenes.append({
+                            'index': i,
+                            'start': start,
+                            'end': end,
+                            'duration': scene_duration,
+                            'mid_point': (start + end) / 2
+                        })
 
             return scenes
 

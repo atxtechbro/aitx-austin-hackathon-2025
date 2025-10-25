@@ -46,17 +46,22 @@ class NemotronAgent:
             print(f"[Iteration {i+1}] Nemotron deciding next action...")
             action = self._decide_action(state, tools)
 
-            print(f"   → Tool: {action['tool']}")
-            print(f"   → Reasoning: {action['reasoning'][:100]}...")
+            # Validate action has required keys
+            if not action or 'tool' not in action:
+                print(f"   ✗ Invalid action from LLM: {action}\n")
+                return state['history']
 
-            if action['done']:
+            print(f"   → Tool: {action['tool']}")
+            print(f"   → Reasoning: {action.get('reasoning', 'No reasoning provided')[:100]}...")
+
+            if action.get('done', False):
                 print(f"\n✅ Agent completed goal!\n")
                 return state['history']
 
             # Execute tool
             try:
                 tool_fn = tools[action['tool']]['function']
-                result = tool_fn(**action['params'])
+                result = tool_fn(**action.get('params', {}))
 
                 state['history'].append({
                     "iteration": i + 1,
