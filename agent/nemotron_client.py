@@ -347,9 +347,9 @@ Rate the excitement level from 0-100 based on:
 
 Look for: kill feeds, score changes, special effects, intense action, multiple enemies, health bars.
 
-Respond with ONLY valid JSON:
+Respond with ONLY valid JSON (use your actual score, not the example):
 {{
-    "score": 85,
+    "score": <number 0-100>,
     "reasoning": "why this score based on what you see",
     "description": "short catchy title for social media"
 }}
