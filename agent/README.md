@@ -36,16 +36,18 @@ Tools:
 ```bash
 cd agent/
 
-# Install
-pip install -r requirements.txt
+# Install dependencies with uv
+uv pip install -r requirements.txt
 
 # Configure
 cp .env.example .env
 # Add NVIDIA_API_KEY from https://build.nvidia.com/
 
 # Run
-python gaming_agent.py video.mp4 --count 3
+uv run gaming_agent.py video.mp4 --count 3
 ```
+
+**Note:** Install uv first: `curl -LsSf https://astral.sh/uv/install.sh | sh`
 
 ## How It Works
 
