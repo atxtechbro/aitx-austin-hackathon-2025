@@ -234,7 +234,12 @@ Set "done": true ONLY when you've extracted all required clips.
 
     def _extract_json(self, text: str) -> Dict:
         """Extract JSON from Nemotron's response."""
-        # Try to find JSON in the response
+        # Skip <think> tags if present
+        think_end = text.find('</think>')
+        if think_end >= 0:
+            text = text[think_end + 8:]  # Skip past </think>
+
+        # Find JSON object
         start = text.find('{')
         end = text.rfind('}') + 1
 
