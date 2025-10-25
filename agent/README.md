@@ -1,6 +1,6 @@
 # Gaming Highlights Autonomous Agent
 
-**Autonomous AI agent powered by NVIDIA Nemotron Nano 9B v2**
+**Autonomous AI agent powered by NVIDIA Cosmos Nemotron 34B (Vision-Language Model)**
 
 Built for **AITX Austin AI Community Hackathon 2025** 🎮
 
@@ -16,7 +16,7 @@ Nemotron makes ALL decisions:
 ### Architecture
 
 ```
-Nemotron Agent (Cloud API)
+Cosmos Nemotron 34B VLM Agent
 ├─ Sees available tools
 ├─ Decides which tool to use next
 ├─ Executes tool
@@ -25,9 +25,11 @@ Nemotron Agent (Cloud API)
 Tools:
 • get_video_info
 • detect_scenes
-• analyze_scene (Nemotron scores 0-100)
+• analyze_scene (VLM analyzes screenshots, scores 0-100)
 • extract_clip
 ```
+
+**Key Advantage:** Cosmos Nemotron 34B is a Vision-Language Model that can actually SEE and analyze the gaming screenshots, not just read text descriptions!
 
 ## Quick Start
 

@@ -30,7 +30,7 @@ class NemotronAgent:
             api_key: NVIDIA API key from build.nvidia.com
         """
         self.api_key = api_key
-        self.url = "https://integrate.api.nvidia.com/v1/chat/completions"
+        self.url = "https://ai.api.nvidia.com/v1/vlm/nvidia/cosmos-nemotron-34b"
 
     def run(
         self,
@@ -168,10 +168,9 @@ Set "done": true when you've achieved the goal (extracted and saved the clips).
             messages.insert(0, {"role": "system", "content": "/think"})
 
         payload = {
-            "model": "nvidia/nvidia-nemotron-nano-9b-v2",
+            "model": "nvidia/cosmos-nemotron-34b",
             "messages": messages,
-            "temperature": 0.6,
-            "top_p": 0.95,
+            "temperature": 0.2,
             "max_tokens": 1024
         }
 
@@ -234,42 +233,60 @@ Set "done": true when you've achieved the goal (extracted and saved the clips).
 
 def analyze_scene_with_nemotron(
     api_key: str,
-    frame_description: str,
+    frame_path: str,
     timestamp: float
 ) -> Dict:
     """
-    Use Nemotron to analyze a gaming scene.
+    Use Cosmos Nemotron 34B (VLM) to analyze a gaming scene image.
 
     Returns score, reasoning, and description.
     """
-    url = "https://integrate.api.nvidia.com/v1/chat/completions"
+    import base64
 
-    prompt = f"""Analyze this gaming moment at {timestamp:.1f}s:
+    url = "https://ai.api.nvidia.com/v1/vlm/nvidia/cosmos-nemotron-34b"
 
-{frame_description}
+    # Read and encode the image
+    with open(frame_path, 'rb') as f:
+        image_data = base64.b64encode(f.read()).decode('utf-8')
 
-Rate the excitement level from 0-100 where:
-- 90-100: Epic plays, rare moments, clutch victories
-- 70-89: Good plays, skillful actions
-- 50-69: Decent moments, average gameplay
-- 0-49: Boring, low action
+    prompt = f"""Analyze this gaming screenshot at {timestamp:.1f}s.
+
+Rate the excitement level from 0-100 based on:
+- 90-100: Epic plays (triple kills, clutch moments, rare achievements)
+- 70-89: Good plays (double kills, skillful shots, winning plays)
+- 50-69: Decent moments (average gameplay, some action)
+- 0-49: Boring (low action, menus, loading screens)
+
+Look for: kill feeds, score changes, special effects, intense action, multiple enemies, health bars.
 
 Respond with ONLY valid JSON:
 {{
     "score": 85,
-    "reasoning": "why this score",
+    "reasoning": "why this score based on what you see",
     "description": "short catchy title for social media"
 }}
 """
 
     payload = {
-        "model": "nvidia/nvidia-nemotron-nano-9b-v2",
+        "model": "nvidia/cosmos-nemotron-34b",
         "messages": [
-            {"role": "system", "content": "/think"},
-            {"role": "user", "content": prompt}
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "image_url",
+                        "image_url": {
+                            "url": f"data:image/jpeg;base64,{image_data}"
+                        }
+                    },
+                    {
+                        "type": "text",
+                        "text": prompt
+                    }
+                ]
+            }
         ],
-        "temperature": 0.6,
-        "top_p": 0.95,
+        "temperature": 0.2,
         "max_tokens": 512
     }
 

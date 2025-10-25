@@ -165,13 +165,10 @@ def tool_analyze_scene(state, scene_index: int):
     if not success:
         return json.dumps({"error": "Failed to extract frame"})
 
-    # Simple frame description (in production, use vision model)
-    frame_desc = f"Gaming frame at {scene['start']:.1f}s, duration {scene['duration']:.1f}s"
-
-    # Analyze with Nemotron
+    # Analyze with Cosmos Nemotron 34B (Vision-Language Model)
     analysis = analyze_scene_with_nemotron(
         state['api_key'],
-        frame_desc,
+        str(frame_path),
         scene['start']
     )
 
