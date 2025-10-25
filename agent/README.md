@@ -1,99 +1,48 @@
 # Gaming Highlights Autonomous Agent
 
-**A true autonomous AI agent powered by Claude Agent SDK + NVIDIA Nemotron Nano**
+**Autonomous AI agent powered by NVIDIA Nemotron Nano 9B v2**
 
 Built for **AITX Austin AI Community Hackathon 2025** 🎮
 
 ## What Makes This Autonomous?
 
-This is **not** just a script or a Claude Code slash command. It's a genuine autonomous agent that:
+Nemotron makes ALL decisions:
 
-- ✅ **Makes independent decisions** about which scenes to analyze
-- ✅ **Uses multiple AI models collaboratively** (Claude orchestrates, Nemotron analyzes)
-- ✅ **Operates without human intervention** once started
-- ✅ **Employs custom tools via MCP** for specialized tasks
-- ✅ **Reasons about gameplay quality** using domain-specific AI
+- ✅ **Which tools to use** (detect scenes, analyze, extract clips)
+- ✅ **When to analyze** each scene
+- ✅ **How to rank** highlights
+- ✅ **When task is complete**
 
-### Architecture: Multi-Agent Collaboration
+### Architecture
 
 ```
-┌─────────────────────────────────────┐
-│   Claude Agent (Orchestrator)       │
-│   - Manages workflow                │
-│   - Calls tools strategically       │
-│   - Makes ranking decisions         │
-└──────────┬──────────────────────────┘
-           │
-    ┌──────┴──────────┐
-    │                 │
-┌───▼──────────┐  ┌──▼────────────────────┐
-│ FFmpeg Tools │  │ Nemotron Nano 9B v2   │
-│              │  │ (Gaming Analyst)      │
-│ • Scene Det  │  │ • Scores excitement   │
-│ • Extraction │  │ • Generates reasoning │
-│ • Clipping   │  │ • Creates descriptions│
-└──────────────┘  └───────────────────────┘
+Nemotron Agent (Cloud API)
+├─ Sees available tools
+├─ Decides which tool to use next
+├─ Executes tool
+└─ Repeats until goal achieved
+
+Tools:
+• get_video_info
+• detect_scenes
+• analyze_scene (Nemotron scores 0-100)
+• extract_clip
 ```
 
 ## Quick Start
 
-### 1. Prerequisites
-
 ```bash
-# Required: FFmpeg
-sudo apt-get install ffmpeg  # Ubuntu/Debian
-brew install ffmpeg          # macOS
-
-# Required: Python 3.10+
-python3 --version
-
-# Recommended: CUDA GPU for Nemotron (works on CPU but slower)
-nvidia-smi  # Check GPU availability
-```
-
-### 2. Installation
-
-```bash
-# Navigate to agent directory
 cd agent/
 
-# Create virtual environment
-python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
+# Install
 pip install -r requirements.txt
 
-# This will download Nemotron-Nano-9B-v2 (~18GB) on first run
-```
-
-### 3. Configuration
-
-```bash
-# Copy environment template
+# Configure
 cp .env.example .env
+# Add NVIDIA_API_KEY from https://build.nvidia.com/
 
-# Edit .env and add your Anthropic API key
-# Get one from: https://console.anthropic.com/
-nano .env
-```
-
-Required in `.env`:
-```bash
-ANTHROPIC_API_KEY=your_key_here
-```
-
-### 4. Run the Agent
-
-```bash
-# Basic usage
-python gaming_agent.py path/to/your/gameplay.mp4
-
-# Extract 5 clips instead of default 3
-python gaming_agent.py my_gameplay.mp4 --count 5
-
-# Use custom config
-python gaming_agent.py video.mp4 --config ../config.yml
+# Run
+python gaming_agent.py video.mp4 --count 3
 ```
 
 ## How It Works

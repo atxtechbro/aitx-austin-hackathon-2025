@@ -1,16 +1,9 @@
-# Claude Agent SDK
-claude-agent-sdk>=0.1.0
-
-# Nemotron Model
-torch>=2.0.0
-transformers>=4.35.0
-accelerate>=0.24.0
-sentencepiece>=0.1.99
-
-# Video Processing
-opencv-python>=4.8.0
-pillow>=10.0.0
-
-# Utilities
-pyyaml>=6.0
+# Core dependencies
+requests>=2.31.0
 python-dotenv>=1.0.0
+
+# Video processing
+opencv-python>=4.8.0
+
+# Configuration
+pyyaml>=6.0
