@@ -1,6 +1,7 @@
 """
-Cosmos Nemotron 34B VLM agent.
-Decides which tools to use and when to stop.
+Dual Nemotron agent:
+- 340B Instruct for orchestration (most powerful!)
+- VL 8B for vision analysis (scoring screenshots)
 """
 
 import os
@@ -10,13 +11,16 @@ from typing import Dict, List, Callable, Any
 
 
 class NemotronAgent:
-    """Autonomous agent powered by Cosmos Nemotron 34B VLM."""
+    """Autonomous agent powered by dual Nemotron models."""
 
     def __init__(self, api_key: str):
         """Initialize agent with NVIDIA API key."""
         self.api_key = api_key
         self.url = "https://integrate.api.nvidia.com/v1/chat/completions"
-        self.model = "nvidia/llama-3.1-nemotron-nano-vl-8b-v1"  # Nemotron VL (vision-language)
+        # Use 340B for orchestration (most powerful Nemotron model!)
+        self.orchestrator_model = "nvidia/nemotron-4-340b-instruct"
+        # Use VL 8B for vision analysis
+        self.vision_model = "nvidia/llama-3.1-nemotron-nano-vl-8b-v1"
 
     def run(
         self,
@@ -146,7 +150,7 @@ Set "done": true ONLY when you've extracted all required clips.
             messages.insert(0, {"role": "system", "content": "/think"})
 
         payload = {
-            "model": self.model,
+            "model": self.orchestrator_model,  # Use 70B for orchestration
             "messages": messages,
             "temperature": 0.2,
             "max_tokens": 1024
@@ -243,7 +247,7 @@ Set "done": true ONLY when you've extracted all required clips.
 
 
 def analyze_scene_with_nemotron(api_key: str, frame_path: str, timestamp: float) -> Dict:
-    """Analyze gaming screenshot with Nemotron VL."""
+    """Analyze gaming screenshot with Nemotron VL 8B (vision specialist)."""
     import base64
 
     url = "https://integrate.api.nvidia.com/v1/chat/completions"
@@ -271,7 +275,7 @@ Respond with ONLY valid JSON:
 """
 
     payload = {
-        "model": "nvidia/llama-3.1-nemotron-nano-vl-8b-v1",
+        "model": "nvidia/llama-3.1-nemotron-nano-vl-8b-v1",  # Vision specialist
         "messages": [
             {
                 "role": "user",
