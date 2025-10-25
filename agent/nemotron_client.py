@@ -90,7 +90,7 @@ class NemotronAgent:
         tools_desc = self._format_tools(tools)
 
         # Format history
-        history_desc = self._format_history(state['history'])
+        history_desc = self._format_history(state)
 
         # Build prompt
         prompt = f"""You are an autonomous agent extracting gaming highlights from videos.
@@ -210,9 +210,9 @@ CRITICAL REMINDERS:
             lines.append(f"  Parameters: {params}")
         return "\n".join(lines)
 
-    def _format_history(self, history: List[Dict]) -> str:
+    def _format_history(self, state: Dict) -> str:
         """Format execution history for prompt."""
-        if not history:
+        if not state.get('history'):
             return "(No actions taken yet)"
 
         # Track what's been done
@@ -221,7 +221,7 @@ CRITICAL REMINDERS:
         scene_scores = {}  # scene_index -> score
         extracted_clips = []
 
-        for entry in history:
+        for entry in state['history']:
             tool = entry['action']['tool']
             if tool == 'detect_scenes' and entry.get('success'):
                 scenes_detected = True
@@ -288,7 +288,7 @@ CRITICAL REMINDERS:
 
         # Recent actions
         summary.append("\nRecent actions:")
-        for entry in history[-3:]:
+        for entry in state['history'][-3:]:
             iter_num = entry['iteration']
             tool = entry['action']['tool']
             params = entry['action'].get('params', {})
