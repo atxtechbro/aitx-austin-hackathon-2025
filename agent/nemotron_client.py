@@ -126,8 +126,8 @@ Respond with ONLY valid JSON (no markdown, no explanations):
 Set "done": true ONLY when you've extracted all required clips.
 """
 
-        # Call Nemotron with reasoning mode
-        response = self._call_nemotron(prompt, use_reasoning=True)
+        # Call Nemotron
+        response = self._call_nemotron(prompt, use_reasoning=False)
 
         # Parse JSON response
         try:
@@ -144,7 +144,7 @@ Set "done": true ONLY when you've extracted all required clips.
                 "done": True
             }
 
-    def _call_nemotron(self, prompt: str, use_reasoning: bool = True) -> str:
+    def _call_nemotron(self, prompt: str, use_reasoning: bool = False) -> str:
         """Call NVIDIA Nemotron API."""
 
         messages = [
@@ -158,7 +158,7 @@ Set "done": true ONLY when you've extracted all required clips.
             "model": self.orchestrator_model,  # Use Super 49B for orchestration
             "messages": messages,
             "temperature": 0.2,
-            "max_tokens": 1024
+            "max_tokens": 512
         }
 
         headers = {
