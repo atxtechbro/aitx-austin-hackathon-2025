@@ -16,7 +16,7 @@ class NemotronAgent:
         """Initialize agent with NVIDIA API key."""
         self.api_key = api_key
         self.url = "https://integrate.api.nvidia.com/v1/chat/completions"
-        self.model = "meta/llama-3.2-90b-vision-instruct"
+        self.model = "nvidia/llama-3.1-nemotron-nano-vl-8b-v1"  # Nemotron VL (vision-language)
 
     def run(
         self,
@@ -200,7 +200,7 @@ Set "done": true when you've achieved the goal (extracted and saved the clips).
 
 
 def analyze_scene_with_nemotron(api_key: str, frame_path: str, timestamp: float) -> Dict:
-    """Analyze gaming screenshot with Llama 3.2 Vision VLM."""
+    """Analyze gaming screenshot with Nemotron VL."""
     import base64
 
     url = "https://integrate.api.nvidia.com/v1/chat/completions"
@@ -228,7 +228,7 @@ Respond with ONLY valid JSON:
 """
 
     payload = {
-        "model": "meta/llama-3.2-90b-vision-instruct",
+        "model": "nvidia/llama-3.1-nemotron-nano-vl-8b-v1",
         "messages": [
             {
                 "role": "user",
