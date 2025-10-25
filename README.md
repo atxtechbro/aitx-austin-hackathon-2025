@@ -88,9 +88,19 @@ Get your gaming highlights in 4 easy steps:
 
 ### In Claude Code
 
-1. Open this repository in Claude Code
-2. Say: `"Run gaming-highlights.md on my_gameplay.mp4"`
-3. Claude will execute the procedure and extract your best clips
+**Option 1: Slash Command** (recommended - discoverable in autocomplete):
+```
+/gaming-highlights my_gameplay.mp4
+```
+
+**Option 2: Natural Language**:
+```
+gaming-highlights my_gameplay.mp4
+```
+
+Or simply say: `"Run gaming-highlights.md on my_gameplay.mp4"`
+
+Both methods work identically - use whichever feels more natural!
 
 ### Command Examples
 
