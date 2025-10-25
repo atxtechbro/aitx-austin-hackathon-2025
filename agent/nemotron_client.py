@@ -1,8 +1,6 @@
 """
-Nemotron Agent Client
-
-Lightweight agentic implementation using NVIDIA Nemotron Nano 9B v2 cloud API.
-Nemotron makes all decisions about which tools to use and when to stop.
+Cosmos Nemotron 34B VLM agent.
+Decides which tools to use and when to stop.
 """
 
 import os
@@ -12,23 +10,10 @@ from typing import Dict, List, Callable, Any
 
 
 class NemotronAgent:
-    """
-    Autonomous agent powered by NVIDIA Nemotron Nano 9B v2.
-
-    The agent:
-    - Sees available tools and their descriptions
-    - Decides which tool to use next
-    - Executes tools based on its reasoning
-    - Determines when the goal is achieved
-    """
+    """Autonomous agent powered by Cosmos Nemotron 34B VLM."""
 
     def __init__(self, api_key: str):
-        """
-        Initialize Nemotron agent.
-
-        Args:
-            api_key: NVIDIA API key from build.nvidia.com
-        """
+        """Initialize agent with NVIDIA API key."""
         self.api_key = api_key
         self.url = "https://ai.api.nvidia.com/v1/vlm/nvidia/cosmos-nemotron-34b"
 
@@ -38,17 +23,7 @@ class NemotronAgent:
         tools: Dict[str, Dict[str, Any]],
         max_iterations: int = 20
     ) -> List[Dict]:
-        """
-        Run the agent to achieve a goal using available tools.
-
-        Args:
-            goal: What the agent should accomplish
-            tools: Dictionary of available tools with schemas
-            max_iterations: Maximum tool uses before stopping
-
-        Returns:
-            List of actions taken by the agent
-        """
+        """Run agent to achieve goal using available tools."""
         state = {
             "goal": goal,
             "history": [],
@@ -99,16 +74,8 @@ class NemotronAgent:
         print("⚠️  Max iterations reached\n")
         return state['history']
 
-    def _decide_action(
-        self,
-        state: Dict,
-        tools: Dict[str, Dict]
-    ) -> Dict:
-        """
-        Ask Nemotron to decide the next action.
-
-        Returns dict with: tool, params, reasoning, done
-        """
+    def _decide_action(self, state: Dict, tools: Dict[str, Dict]) -> Dict:
+        """Ask Nemotron to decide next action."""
         # Format tools for Nemotron
         tools_desc = self._format_tools(tools)
 
@@ -231,16 +198,8 @@ Set "done": true when you've achieved the goal (extracted and saved the clips).
         return json.loads(text)
 
 
-def analyze_scene_with_nemotron(
-    api_key: str,
-    frame_path: str,
-    timestamp: float
-) -> Dict:
-    """
-    Use Cosmos Nemotron 34B (VLM) to analyze a gaming scene image.
-
-    Returns score, reasoning, and description.
-    """
+def analyze_scene_with_nemotron(api_key: str, frame_path: str, timestamp: float) -> Dict:
+    """Analyze gaming screenshot with Cosmos Nemotron 34B VLM."""
     import base64
 
     url = "https://ai.api.nvidia.com/v1/vlm/nvidia/cosmos-nemotron-34b"
