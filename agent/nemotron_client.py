@@ -259,12 +259,32 @@ CRITICAL REMINDERS:
             for idx, score in sorted_scenes:
                 summary.append(f"    Scene {idx}: {score}/100")
 
-        summary.append(f"✓ Clips extracted: {len(extracted_clips)}")
+        # Parse goal to extract required clip count
+        required_clips = 3  # default
+        goal = state.get('goal', '')
+        if 'top 1' in goal.lower():
+            required_clips = 1
+        elif 'top 2' in goal.lower():
+            required_clips = 2
+        elif 'top 3' in goal.lower():
+            required_clips = 3
+        else:
+            # Try to find number in goal
+            import re
+            match = re.search(r'top (\d+)', goal.lower())
+            if match:
+                required_clips = int(match.group(1))
+
+        # Show extraction progress prominently
+        if len(extracted_clips) >= required_clips:
+            summary.append(f"🎯 GOAL COMPLETE: Clips extracted: {len(extracted_clips)}/{required_clips}")
+            summary.append(f"   ⚠️  SET done=true NOW!")
+        else:
+            summary.append(f"📊 Progress: Clips extracted: {len(extracted_clips)}/{required_clips} (need {required_clips - len(extracted_clips)} more)")
 
         # If all scenes analyzed but no clips extracted yet, suggest which to extract
-        if len(scene_scores) == total_scenes and len(extracted_clips) == 0 and total_scenes > 0:
-            top_scenes = sorted(scene_scores.items(), key=lambda x: x[1], reverse=True)
-            summary.append(f"\n💡 Next: Extract top scenes as clips (use scene_index from top scenes above)")
+        if len(scene_scores) >= 3 and len(extracted_clips) == 0:
+            summary.append(f"\n💡 Next: Extract top {required_clips} scene(s) as clips")
 
         # Recent actions
         summary.append("\nRecent actions:")
