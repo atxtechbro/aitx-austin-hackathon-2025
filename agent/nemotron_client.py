@@ -101,6 +101,8 @@ WORKFLOW RULES:
 1. FIRST: Call detect_scenes once to find all scenes
 2. THEN: Call analyze_scene for EACH scene (scene_index: 0, 1, 2, etc.)
 3. AFTER analyzing ALL scenes: Extract the top N clips with extract_clip
+   - Use scene_index from the TOP scoring scenes shown in history
+   - Set rank=1 for best clip, rank=2 for second best, etc.
 4. Set done=true ONLY after extracting all required clips
 
 Available Tools:
@@ -199,7 +201,7 @@ Do NOT use <think> tags. Output JSON directly.
         # Track what's been done
         scenes_detected = False
         total_scenes = 0
-        analyzed_scenes = []
+        scene_scores = {}  # scene_index -> score
         extracted_clips = []
 
         for entry in history:
@@ -216,16 +218,36 @@ Do NOT use <think> tags. Output JSON directly.
             elif tool == 'analyze_scene' and entry.get('success'):
                 params = entry['action'].get('params', {})
                 scene_idx = params.get('scene_index', -1)
-                if scene_idx not in analyzed_scenes:
-                    analyzed_scenes.append(scene_idx)
+                # Extract score from result
+                try:
+                    import json
+                    result = json.loads(entry['result'])
+                    score = result.get('score', 0)
+                    scene_scores[scene_idx] = score
+                except:
+                    scene_scores[scene_idx] = 0
             elif tool == 'extract_clip' and entry.get('success'):
                 extracted_clips.append(entry['action'])
 
         summary = []
         if scenes_detected:
             summary.append(f"✓ Scenes detected: {total_scenes}")
-        summary.append(f"✓ Scenes analyzed: {len(analyzed_scenes)} {analyzed_scenes}")
+
+        # Show analyzed scenes with scores
+        if scene_scores:
+            summary.append(f"✓ Scenes analyzed: {len(scene_scores)}")
+            # Show top 5 highest scoring scenes
+            sorted_scenes = sorted(scene_scores.items(), key=lambda x: x[1], reverse=True)[:5]
+            summary.append("  Top scenes by score:")
+            for idx, score in sorted_scenes:
+                summary.append(f"    Scene {idx}: {score}/100")
+
         summary.append(f"✓ Clips extracted: {len(extracted_clips)}")
+
+        # If all scenes analyzed but no clips extracted yet, suggest which to extract
+        if len(scene_scores) == total_scenes and len(extracted_clips) == 0 and total_scenes > 0:
+            top_scenes = sorted(scene_scores.items(), key=lambda x: x[1], reverse=True)
+            summary.append(f"\n💡 Next: Extract top scenes as clips (use scene_index from top scenes above)")
 
         # Recent actions
         summary.append("\nRecent actions:")
@@ -240,10 +262,17 @@ Do NOT use <think> tags. Output JSON directly.
 
     def _extract_json(self, text: str) -> Dict:
         """Extract JSON from Nemotron's response."""
-        # Skip <think> tags if present
-        think_end = text.find('</think>')
-        if think_end >= 0:
-            text = text[think_end + 8:]  # Skip past </think>
+        # If there's a <think> tag (even without closing), skip to first JSON after it
+        think_start = text.find('<think>')
+        if think_start >= 0:
+            # Look for closing tag
+            think_end = text.find('</think>', think_start)
+            if think_end >= 0:
+                # Skip past closing tag
+                text = text[think_end + 8:]
+            else:
+                # No closing tag - look for first { after <think>
+                text = text[think_start + 7:]  # Skip past <think>
 
         # Find JSON object
         start = text.find('{')
