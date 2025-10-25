@@ -115,15 +115,16 @@ IMPORTANT:
 - Don't extract clips until you've analyzed enough scenes
 - Track which scenes you've already analyzed
 
-Respond with ONLY valid JSON (no markdown, no explanations):
+Respond IMMEDIATELY with ONLY valid JSON. NO thinking tags, NO markdown, NO explanations:
 {{
     "tool": "tool_name",
     "params": {{"param": "value"}},
-    "reasoning": "why you chose this action",
+    "reasoning": "brief reason for this action",
     "done": false
 }}
 
 Set "done": true ONLY when you've extracted all required clips.
+Do NOT use <think> tags. Output JSON directly.
 """
 
         # Call Nemotron
@@ -158,7 +159,7 @@ Set "done": true ONLY when you've extracted all required clips.
             "model": self.orchestrator_model,  # Use Super 49B for orchestration
             "messages": messages,
             "temperature": 0.2,
-            "max_tokens": 512
+            "max_tokens": 1024
         }
 
         headers = {
