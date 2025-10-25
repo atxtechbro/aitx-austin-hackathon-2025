@@ -179,7 +179,18 @@ Do NOT use <think> tags. Output JSON directly.
             response.raise_for_status()
 
             result = response.json()
-            return result['choices'][0]['message']['content']
+            message = result['choices'][0]['message']
+
+            # Ultra 253B uses reasoning_content instead of content
+            content = message.get('reasoning_content') or message.get('content')
+
+            # Handle None response
+            if content is None:
+                print(f"⚠️  API returned None content. Full response: {result}")
+                # Return empty JSON as fallback
+                return '{}'
+
+            return content
 
         except Exception as e:
             raise Exception(f"Nemotron API call failed: {str(e)}")
@@ -262,6 +273,10 @@ Do NOT use <think> tags. Output JSON directly.
 
     def _extract_json(self, text: str) -> Dict:
         """Extract JSON from Nemotron's response."""
+        # Handle None or empty response
+        if not text:
+            raise ValueError("Empty response from LLM")
+
         # If there's a <think> tag (even without closing), skip to first JSON after it
         think_start = text.find('<think>')
         if think_start >= 0:
