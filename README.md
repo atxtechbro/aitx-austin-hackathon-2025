@@ -4,6 +4,36 @@ AI-powered tool to automatically extract the best moments from gaming videos usi
 
 Built for **AITX Austin AI Community Hackathon 2025** 🎮
 
+## Quick Start
+
+Get your gaming highlights in 4 easy steps:
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/atxtechbro/aitx-austin-hackathon-2025.git
+   cd aitx-austin-hackathon-2025
+   ```
+
+2. **Copy the config** (optional - defaults work great):
+   ```bash
+   cp config.example.yml config.yml
+   ```
+
+3. **Drop your video in the project** (won't be committed - see `.gitignore`):
+   ```bash
+   # Just copy your video file here
+   cp ~/Desktop/my_gameplay.mp4 .
+   ```
+
+4. **Open in Claude Code and run**:
+   ```
+   gaming-highlights my_gameplay.mp4
+   ```
+
+**That's it!** Your top 3 highlights will be extracted to `./output/clips/` 🎉
+
+> **Note**: Video files are automatically gitignored and stay local. They're never committed to the repository. To share test videos with contributors, post a cloud link (Google Drive, YouTube) in the issue comments.
+
 ## Features
 
 - 🎮 **Gaming-Focused**: Optimized for detecting action-packed gameplay moments
@@ -64,20 +94,32 @@ Built for **AITX Austin AI Community Hackathon 2025** 🎮
 
 ### Command Examples
 
-- Extract top 3 clips (default):
-  ```
-  gaming-highlights my_gameplay.mp4
-  ```
+**Basic usage** - video in project root:
+```
+gaming-highlights my_apex_gameplay.mp4
+```
 
-- Extract top 5 clips:
-  ```
-  gaming-highlights my_gameplay.mp4 --count 5
-  ```
+**Extract more clips** - get top 5 instead of default 3:
+```
+gaming-highlights my_gameplay.mp4 --count 5
+```
 
-- Preview what would happen (dry-run):
-  ```
-  gaming-highlights my_gameplay.mp4 --dry-run
-  ```
+**Video in subdirectory** (also gitignored):
+```
+gaming-highlights videos/valorant_match.mp4
+```
+
+**Full absolute path** - video outside project:
+```
+gaming-highlights /Users/gamer/Desktop/cod_highlights.mp4
+```
+
+**Preview mode** - see what would happen without processing:
+```
+gaming-highlights my_gameplay.mp4 --dry-run
+```
+
+> **All video formats supported**: `.mp4`, `.mov`, `.mkv`, `.avi`, `.webm`, `.flv`, `.wmv` - they're all gitignored automatically!
 
 ## Output
 
