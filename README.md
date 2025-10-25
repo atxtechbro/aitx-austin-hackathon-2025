@@ -4,6 +4,31 @@ AI-powered tool to automatically extract the best moments from gaming videos usi
 
 Built for **AITX Austin AI Community Hackathon 2025** 🎮
 
+## 🚀 Two Ways to Use This Project
+
+### 1. **Autonomous Agent** (Recommended for Hackathon) 🤖
+
+A true autonomous AI agent powered by **Claude Agent SDK** + **NVIDIA Nemotron Nano**.
+
+- ✅ Runs independently without Claude Code
+- ✅ Multi-agent collaboration (Claude orchestrates, Nemotron analyzes)
+- ✅ Custom MCP tools for video processing
+- ✅ Standalone Python application
+
+**[→ Go to Agent Documentation](./agent/README.md)**
+
+### 2. **Claude Code Slash Command** (Quick Prototype)
+
+Simple slash command that runs in Claude Code interface.
+
+- ✅ Easy to try out
+- ✅ No setup required beyond Claude Code
+- ✅ Good for quick testing
+
+**[→ See slash command docs below](#usage)**
+
+---
+
 ## Quick Start
 
 Get your gaming highlights in 4 easy steps:
@@ -174,11 +199,33 @@ gaming_highlights:
 
 ## Tech Stack
 
+### Autonomous Agent
+- **Claude Agent SDK**: Autonomous agent orchestration
+- **NVIDIA Nemotron Nano 9B v2**: Gaming scene analysis with reasoning
+- **FFmpeg**: Video processing and scene detection
+- **PyTorch + Transformers**: Model inference
+- **MCP (Model Context Protocol)**: Custom tool integration
+
+### Slash Command (Legacy)
 - **FFmpeg**: Video processing and scene detection
 - **Bash**: Script orchestration
 - **PyYAML**: Configuration parsing
 - **Anthropic Claude**: AI-powered scene analysis and ranking
 - **Claude Code**: Execution environment
+
+## Comparison: Slash Command vs. Autonomous Agent
+
+| Feature | Slash Command | Autonomous Agent |
+|---------|---------------|------------------|
+| **Setup** | Claude Code only | Python + dependencies |
+| **Execution** | Manual trigger | Autonomous/programmatic |
+| **AI Models** | Claude only | Claude + Nemotron |
+| **Architecture** | Script execution | Multi-agent system |
+| **Scalability** | Single video | Batch processing ready |
+| **Integration** | Claude Code UI | Standalone CLI/API |
+| **Hackathon Tracks** | Basic demo | Agent + Nemotron tracks |
+
+**For the hackathon submission, we recommend using the [Autonomous Agent](./agent/README.md)** as it better demonstrates the capabilities of modern AI agent architectures.
 
 ## Examples
 
