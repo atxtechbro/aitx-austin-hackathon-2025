@@ -1,0 +1,86 @@
+# Gaming Highlight Extractor Configuration
+# AITX Austin Hackathon 2025
+#
+# Copy this file to config.yml and customize for your needs
+
+gaming_highlights:
+  # Scene detection settings - controls how video is split into segments
+  scene_detection:
+    # Scene change detection threshold (0.1-0.5)
+    # Lower = more sensitive (detects subtle transitions)
+    # Higher = less sensitive (only major scene changes)
+    # Gaming tip: 0.3 is good for detecting round transitions, respawns, map changes
+    threshold: 0.3
+
+    # Clip duration constraints (in seconds)
+    min_duration: 5.0   # Minimum clip length - long enough to show a play
+    max_duration: 45.0  # Maximum clip length - perfect for TikTok/Shorts (60s limit)
+
+  # AI analysis settings - controls how clips are ranked
+  analysis:
+    # What to optimize for when selecting clips
+    # Options: "action", "highlights", "story", "interesting"
+    # Gaming default: "action" for high-intensity plays
+    optimize_for: "action"
+
+    # Factors considered during clip selection
+    # These guide the AI's decision-making process
+    factors:
+      - "gameplay_intensity"    # Fast-paced action, combat, quick movements
+      - "visual_interest"       # Visually exciting moments (explosions, effects)
+      - "ui_indicators"         # On-screen indicators (kills, score, achievements)
+      - "scene_duration"        # Natural clip length from scene boundaries
+
+  # Output settings
+  output:
+    # Where to save extracted clips
+    clips_dir: "./output/clips"
+
+    # Where to save metadata (timestamps, rankings, scene info)
+    metadata_dir: "./output/metadata"
+
+    # Number of clips to extract by default
+    # Gaming default: Top 3 plays for a highlight reel
+    default_count: 3
+
+# Game-specific presets (uncomment to use)
+# You can create custom presets for different game types
+
+# FPS Games (Call of Duty, Valorant, CS:GO)
+# gaming_highlights:
+#   scene_detection:
+#     threshold: 0.35  # Higher threshold for fast-paced action
+#     min_duration: 3.0  # Quick plays
+#     max_duration: 20.0
+#   analysis:
+#     optimize_for: "action"
+#     factors:
+#       - "kill_streaks"
+#       - "ui_kill_feed"
+#       - "rapid_action"
+
+# MOBA/Strategy (League of Legends, Dota 2)
+# gaming_highlights:
+#   scene_detection:
+#     threshold: 0.25  # Lower for teamfights and objectives
+#     min_duration: 10.0  # Longer plays
+#     max_duration: 60.0
+#   analysis:
+#     optimize_for: "highlights"
+#     factors:
+#       - "teamfight_chaos"
+#       - "objective_taking"
+#       - "multi_kills"
+
+# Racing Games (F1, Forza, Gran Turismo)
+# gaming_highlights:
+#   scene_detection:
+#     threshold: 0.4  # Higher for camera angle changes
+#     min_duration: 8.0  # Full overtakes
+#     max_duration: 30.0
+#   analysis:
+#     optimize_for: "action"
+#     factors:
+#       - "close_racing"
+#       - "overtakes"
+#       - "position_ui"

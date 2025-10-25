@@ -1,0 +1,73 @@
+# Gaming Highlight Extractor - Gitignore
+
+# User config (sensitive, should not be committed)
+config.yml
+
+# Output directories
+output/
+clips/
+metadata/
+
+# Video files (can be large)
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.flv
+*.wmv
+*.webm
+
+# Temporary frame extraction
+frames/
+temp/
+tmp/
+*.jpg
+*.jpeg
+*.png
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+venv/
+ENV/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+logs/
+
+# FFmpeg output
+ffmpeg2pass-0.log
+ffmpeg2pass-0.log.mbtree
+
+# Misc
+.env
+.env.local
+*.bak
+*.tmp
