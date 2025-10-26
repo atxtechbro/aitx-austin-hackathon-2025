@@ -30,8 +30,8 @@ class VideoTools:
                 'gaming_highlights': {
                     'scene_detection': {
                         'threshold': 0.3,
-                        'min_duration': 2.0,
-                        'max_duration': 60.0
+                        'min_duration': 5.0,   # Allow shorter scenes for granularity
+                        'max_duration': 45.0   # Keep under 1 minute
                     },
                     'output': {
                         'clips_dir': './output/clips',
@@ -141,8 +141,8 @@ class VideoTools:
             # Build scene list
             scenes = []
             config = self.config.get('gaming_highlights', {}).get('scene_detection', {})
-            min_dur = config.get('min_duration', 2.0)
-            max_dur = config.get('max_duration', 60.0)
+            min_dur = config.get('min_duration', 5.0)
+            max_dur = config.get('max_duration', 45.0)
 
             for i in range(len(timestamps) - 1):
                 start = timestamps[i]
@@ -161,7 +161,7 @@ class VideoTools:
 
             # Fallback: if no scenes detected, split video into equal chunks
             if not scenes and duration > 0:
-                chunk_duration = min(15.0, duration / 5)  # 15s chunks or 5 equal parts
+                chunk_duration = min(25.0, duration / 10)  # 25s chunks or 10 equal parts
                 num_chunks = max(3, int(duration / chunk_duration))
 
                 for i in range(num_chunks):

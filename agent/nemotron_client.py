@@ -99,8 +99,12 @@ Goal: {state['goal']}
 
 WORKFLOW RULES:
 1. FIRST: Call detect_scenes once to find all scenes
-2. THEN: Call analyze_scene for EACH scene (scene_index: 0, 1, 2, etc.)
-3. AFTER analyzing scenes: Extract the top N clips with extract_clip
+2. THEN: Call analyze_scene for EVERY SINGLE SCENE in the video
+   - You MUST analyze ALL scenes before extracting any clips
+   - Analyze scene_index: 0, 1, 2, 3... until you've analyzed all scenes
+   - Check "Scenes detected" count and analyze that many scenes
+   - DO NOT skip to extraction - analyze the ENTIRE video first
+3. AFTER analyzing ALL scenes: Extract the top N clips with extract_clip
    - Use scene_index from the TOP scoring scenes shown in history
    - Set rank=1 for best clip, rank=2 for second best, etc.
    - Call extract_clip ONCE for each clip needed
@@ -282,8 +286,13 @@ CRITICAL REMINDERS:
         else:
             summary.append(f"📊 Progress: Clips extracted: {len(extracted_clips)}/{required_clips} (need {required_clips - len(extracted_clips)} more)")
 
+        # Warn if trying to extract before analyzing all scenes
+        if len(extracted_clips) == 0 and len(scene_scores) < total_scenes and total_scenes > 0:
+            summary.append(f"\n⚠️  Must analyze ALL {total_scenes} scenes first!")
+            summary.append(f"   Currently analyzed: {len(scene_scores)}/{total_scenes}")
+
         # If all scenes analyzed but no clips extracted yet, suggest which to extract
-        if len(scene_scores) >= 3 and len(extracted_clips) == 0:
+        if len(scene_scores) >= total_scenes and len(extracted_clips) == 0 and total_scenes > 0:
             summary.append(f"\n💡 Next: Extract top {required_clips} scene(s) as clips")
 
         # Recent actions

@@ -89,7 +89,7 @@ def main():
     goal = f"Extract the top {args.count} gaming highlight clips from the video. Analyze scenes, score them, and extract the best ones."
 
     agent = NemotronAgent(api_key)
-    history = agent.run(goal=goal, tools=tools, max_iterations=30)
+    history = agent.run(goal=goal, tools=tools, max_iterations=150)
 
     # Print summary
     print(f"\n{'='*60}")
