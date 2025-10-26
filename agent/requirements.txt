@@ -1,0 +1,9 @@
+# Core dependencies
+requests>=2.31.0
+python-dotenv>=1.0.0
+
+# Video processing
+opencv-python>=4.8.0
+
+# Configuration
+pyyaml>=6.0
